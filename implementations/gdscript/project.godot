@@ -1,0 +1,8 @@
+config_version=5
+
+[application]
+config/name="Quick Dev Kit · GDScript"
+config/features=PackedStringArray("4.6", "GL Compatibility")
+
+[rendering]
+renderer/rendering_method="gl_compatibility"

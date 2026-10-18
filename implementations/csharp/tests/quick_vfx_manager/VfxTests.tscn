@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://tests/quick_vfx_manager/VfxTests.cs" id="1"]
+
+[node name="VfxTests" type="Node"]
+process_mode = 3
+script = ExtResource("1")

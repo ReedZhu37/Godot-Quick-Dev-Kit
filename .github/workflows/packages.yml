@@ -1,0 +1,35 @@
+name: Package layout checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  packages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Build both language bundles from the same revision
+        run: |
+          python tools/package.py --language gdscript --version "${GITHUB_SHA}"
+          python tools/package.py --language csharp --version "${GITHUB_SHA}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: quick-dev-kit-packages
+          path: dist/*.zip
+  gdscript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install official Godot
+        run: |
+          curl -fL --retry 3 -o /tmp/godot.zip https://github.com/godotengine/godot-builds/releases/download/4.6.3-stable/Godot_v4.6.3-stable_linux.x86_64.zip
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          echo "GODOT=/tmp/godot/Godot_v4.6.3-stable_linux.x86_64" >> "$GITHUB_ENV"
+      - run: bash tests/run_gdscript.sh
+      - run: python tests/check_install.py --language gdscript --godot "$GODOT"
