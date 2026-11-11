@@ -56,3 +56,6 @@ jobs:
       - run: python3 tests/run_quick_audio.py --backend all --godot "$GODOT"
       - run: bash tests/quick_database/run.sh
       - run: bash tests/quick_vfx_manager/run.sh
+      - run: GODOT_BIN="$GODOT" bash tests/quick_level_kit/run_csharp_tests.sh
+      - run: GODOT_BIN="$GODOT" bash tests/quick_level_kit/editor_lifecycle_tests.sh
+      - run: GODOT_BIN="$GODOT" bash tests/quick_level_kit/run_isolated_csharp.sh

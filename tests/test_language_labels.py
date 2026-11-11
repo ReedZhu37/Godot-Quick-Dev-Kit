@@ -6,7 +6,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-DUAL = ("quick_input", "quick_audio_manager", "quick_database")
+DUAL = ("quick_input", "quick_audio_manager", "quick_database", "quick_level_kit")
 
 
 class LanguageLabels(unittest.TestCase):
@@ -20,7 +20,7 @@ class LanguageLabels(unittest.TestCase):
                     self.assertTrue((ROOT / "addons" / module / folder / "README.md").is_file())
 
     def test_single_language_modules_are_marked(self):
-        for relative, label in (("quick_vfx_manager/csharp", "C#"), ("quick_level_kit", "GDScript")):
+        for relative, label in (("quick_vfx_manager/csharp", "C#"),):
             config = configparser.ConfigParser()
             config.read(ROOT / "addons" / relative / "plugin.cfg")
             self.assertIn(f"({label})", config["plugin"]["name"])

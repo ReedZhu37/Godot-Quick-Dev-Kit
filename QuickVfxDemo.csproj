@@ -11,5 +11,6 @@
     <Compile Include="addons/quick_audio_manager/csharp/**/*.cs" />
     <Compile Include="addons/quick_database/csharp/**/*.cs" />
     <Compile Include="addons/quick_vfx_manager/csharp/**/*.cs" />
+    <Compile Include="addons/quick_level_kit/csharp/**/*.cs" />
   </ItemGroup>
 </Project>

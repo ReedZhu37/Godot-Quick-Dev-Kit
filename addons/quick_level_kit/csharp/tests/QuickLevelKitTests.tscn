@@ -1,0 +1,4 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://addons/quick_level_kit/csharp/tests/QuickLevelKitTests.cs" id="1"]
+[node name="QuickLevelKitTests" type="Node"]
+script = ExtResource("1")
