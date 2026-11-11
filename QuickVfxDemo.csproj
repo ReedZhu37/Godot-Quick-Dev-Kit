@@ -5,5 +5,11 @@
     <Nullable>enable</Nullable>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
-  <ItemGroup><Compile Include="addons/quick_vfx_manager/csharp/**/*.cs" /></ItemGroup>
+  <!-- Compile every shipped C# module together; only VFX is enabled in the demo. -->
+  <ItemGroup>
+    <Compile Include="addons/quick_input/csharp/**/*.cs" />
+    <Compile Include="addons/quick_audio_manager/csharp/**/*.cs" />
+    <Compile Include="addons/quick_database/csharp/**/*.cs" />
+    <Compile Include="addons/quick_vfx_manager/csharp/**/*.cs" />
+  </ItemGroup>
 </Project>

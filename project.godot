@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Quick VFX Manager · Standalone Lab"
+config/name="Quick Dev Kit (C#) · VFX Lab"
 run/main_scene="res://addons/quick_vfx_manager/csharp/examples/VfxLab.tscn"
 config/features=PackedStringArray("4.7", "C#", "GL Compatibility")
 

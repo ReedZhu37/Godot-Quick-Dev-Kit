@@ -1,200 +1,95 @@
 # Godot Quick Dev Kit
 
-一个面向 **Godot 4.x** 的快速开发工具箱，收录可独立复制、按需启用的通用插件，帮助你更快搭建 Game Jam 原型、独立游戏和小型项目。
+面向 Godot 4.x 的模块化开发工具箱。**Quick Input、Quick Audio Manager、Quick Database 已在 main 提供 GDScript 与原生 C# 两套实现。**
 
-当前工具箱包含音频管理、关卡流程管理和本地数据管理模块。每个模块都位于 `addons/` 下，可以单独安装和使用，不需要引入整个工具箱。
+## 先选择语言
 
-> 项目仍在持续开发中，API 和目录结构可能会发生变化。
+- **[C# / .NET 版入口](CSHARP.md)**：需要 **Godot .NET 编辑器** 和匹配的 .NET SDK。目录名为 `csharp/`，编辑器插件显示名明确带 **(C#)**。
+- **GDScript 版**：使用下表的 GDScript 链接。目录名为 `gds/`，插件显示名带 **(GDScript)**；Quick Level Kit 目前只有 GDScript。
+- 同一模块**二选一安装和启用**。不要把整个 `addons/` 当成纯 C# 包或纯 GDScript 包复制进游戏。
 
-## 功能模块
+| 模块 | GDScript | C# / .NET | 能力 |
+| --- | --- | --- | --- |
+| Quick Input | [GDScript](addons/quick_input/gds/README.md) | **[C#](addons/quick_input/csharp/README.md)** | 输入绑定、多槽位、冲突策略、捕获 UI 与存档 |
+| Quick Audio Manager | [GDScript](addons/quick_audio_manager/gds/README.md) | **[C#](addons/quick_audio_manager/csharp/README.md)** | Resource 音频资产、轨道、总线、音量及播放管理 |
+| Quick Database | [GDScript](addons/quick_database/gds/README.md) | **[C#](addons/quick_database/csharp/README.md)** | 数据文档、事务存储、仓储与多存档槽 |
+| Quick VFX Manager | 暂无 | **[C#](addons/quick_vfx_manager/README.md)** | 调用者组件、组合特效生命周期、世界/附着播放；无 Autoload、无池化 |
+| Quick Level Kit | [GDScript](addons/quick_level_kit/README.md) | 暂无 | 关卡目录、流程、阶段、状态与进度 |
 
-| 模块 | 路径 | 说明 |
-| --- | --- | --- |
-| **Quick VFX Manager (C#)** | [`addons/quick_vfx_manager`](addons/quick_vfx_manager) | 调用者组件注册 Scene/Resource、组合特效生命周期、世界/附着播放；无 Autoload、无池化。 |
-| **Quick Audio Manager** | [`addons/quick_audio_manager`](addons/quick_audio_manager) | 基于 `Resource` 的音频资产、轨道、音量、静音和播放管理。 |
-| **Quick Database** | [`addons/quick_database`](addons/quick_database) | 面向本地存档的数据文档、存储后端、仓储和多存档槽服务。 |
-| **Quick Level Kit** | [`addons/quick_level_kit`](addons/quick_level_kit) | 数据驱动的关卡目录、关卡流程、准备/运行/通关/失败状态和进度管理。 |
+没有标记为支持的语言版本尚未实现；不能据此表推断五个模块都已有双版本。
 
-每个插件目录都包含独立的 README，提供更完整的 API 说明、接入方式和边界定义。
+## 安装单个模块
 
-## 设计目标
-
-- **模块化**：每个插件都可以独立复制到 Godot 项目中。
-- **低耦合**：尽量通过 `Resource`、信号和清晰的运行时服务连接项目代码。
-- **面向快速开发**：优先覆盖 Game Jam 和原型开发中常见的基础设施需求。
-- **数据驱动**：将音频轨道、关卡目录、流程和存档数据配置化。
-- **易于替换**：存储后端、关卡 Stage、Route 和项目侧 UI 都保留扩展点。
-- **明确边界**：插件只负责通用基础能力，不强行接管项目玩法、UI 或视觉表现。
-
-## 安装方式
-
-### 方式一：安装整个工具箱
-
-将仓库中的 `addons` 目录复制到目标 Godot 项目的根目录：
+保留所选版本的完整相对路径。例如只安装 C# Quick Input：
 
 ```text
-你的项目/
+你的游戏/
 ├── project.godot
+├── 你的游戏.csproj
 └── addons/
-    ├── quick_audio_manager/
-    ├── quick_database/
-    └── quick_level_kit/
+    └── quick_input/
+        └── csharp/        # 从本仓库复制整个目录，保留这一层
 ```
 
-然后打开 Godot 编辑器，在 **Project → Project Settings → Plugins** 中按需启用插件。
+GDScript Input、Audio、Database 同理复制各自的 `gds/`；Level 复制 `addons/quick_level_kit/`。VFX 复制 `addons/quick_vfx_manager/`，它仅含 C# 实现与文档。
 
-### 方式二：只安装单个插件
+1. 选择模块和语言，复制对应目录，不要把 `csharp/` 或 `gds/` 的内容摊平。
+2. C# 先在 Godot .NET 中 **Build**，再到 **Project → Project Settings → Plugins** 启用名称带 **(C#)** 的插件。普通 Godot 不能运行 C#。
+3. GDScript 启用名称带 **(GDScript)** 的插件。不要同时启用同模块的两种实现，它们共享 Autoload 名称。
+4. 安装或升级前备份项目；切换语言时先停用旧插件并备份，更新或转换 Autoload、脚本路径、场景与 Resource 引用；确认不再依赖旧实现后才移除旧文件。存档兼容不代表脚本 Resource 可直接互换。
 
-只复制需要的插件目录即可。例如只使用音频管理：
+旧 main 的 Input、Audio、Database GDScript 文件现已移入各模块 `gds/`。引用旧 `res://addons/quick_*/runtime/...` 路径的项目，需要按对应模块 README 更新到 `.../gds/runtime/...`；原 GDScript 脚本 UID 保留。
 
-```text
-目标项目/addons/quick_audio_manager/
-```
+## 根目录演示工程
 
-启用插件后，它会根据自身配置注册对应的 Autoload；禁用插件时会尝试自动移除由插件注册的 Autoload。
+根目录 `project.godot` 是 **C# 工具箱开发/验证工程**，默认运行 VFX Lab。使用 **Godot 4.7.2 .NET + .NET 9** 打开，先 Build 再 F5。
 
-## Quick VFX 独立演示工程
+`QuickVfxDemo.csproj` 保留原名称与程序集名，并一起编译 Input、Audio、Database、VFX 的 C# 代码，检查集成冲突。默认仍只启用 VFX 插件，不自动启用其他 Autoload。其他模块的示例路径见 [C# 入口](CSHARP.md)。
 
-本仓库根目录 `project.godot` 是独立 Quick VFX Manager 实验室（Godot 4.7.2 .NET + .NET 9）。打开后先 Build 再运行；只编译 VFX 插件，不启用或依赖其他 Quick 模块。安装到现有项目时只复制所需插件目录，详见 [Quick VFX 文档](addons/quick_vfx_manager/README.md)。
-
-## 快速开始
-
-### Quick Audio Manager
-
-用于统一管理音乐、音效和 UI 音频轨道。
-
-```gdscript
-@export var click_asset: QuickAudioAsset
-
-func _ready() -> void:
-    var audio := get_node("/root/QuickAudioManager")
-    var player := audio.play(click_asset)
-    if player == null:
-        push_warning("播放失败，请检查音频资源和轨道配置。")
-```
-
-主要能力：
-
-- 使用 `QuickAudioAsset` 描述音频资源、目标轨道、音量和音高。
-- 使用 `QuickAudioTrackDefinition` 配置音轨、bus、send、静音和最大并发 voice 数。
-- 提供 `Music`、`SFX`、`UI` 等默认轨道库。
-- 支持播放、停止、重复播放检测、轨道音量和静音控制。
-- 通过 `QuickAudioManager` Autoload 访问运行时服务。
-
-详细文档：[`addons/quick_audio_manager/README.md`](addons/quick_audio_manager/README.md)
-
-### Quick Database
-
-用于管理本地数据、玩家资料和多个存档槽。
-
-```gdscript
-var database := get_node("/root/QuickDatabase")
-database.open_slot(&"profile", PlayerProfile, "user://profile.cfg")
-
-database.update_slot(&"profile", &"name", func(document: QuickDatabaseDocument) -> void:
-    document.set("name", "Player")
-)
-
-database.commit_slot(&"profile", &"level", func(document: QuickDatabaseDocument) -> void:
-    document.set("level", 2)
-)
-```
-
-主要能力：
-
-- 通过 `QuickDatabaseDocument` 定义可序列化的数据文档。
-- 默认使用基于 `ConfigFile` 的本地存储。
-- 支持事务写入、损坏数据备份和事务恢复保护。
-- 支持多个命名存档槽。
-- 可以继承 `QuickDatabaseStore` 替换为 JSON、云存档或其他存储实现。
-- 通过 `QuickDatabase` Autoload 管理存档生命周期。
-
-详细文档：[`addons/quick_database/README.md`](addons/quick_database/README.md)
-
-### Quick Level Kit
-
-用于快速搭建“关卡目录 → 进入关卡 → 准备 → 运行 → 通关/失败 → 下一关或重试”的基础流程。
-
-```gdscript
-var catalog := QuickLevelKitCatalog.new()
-
-var definition := QuickLevelKitDefinition.new()
-definition.level_id = &"level_001"
-definition.scene = load("res://levels/Level001.tscn")
-catalog.levels = [definition]
-catalog.default_flow = QuickLevelKitDefaultFlow.create()
-
-QuickLevelKit.set_catalog(catalog)
-QuickLevelKit.load_first_level()
-```
-
-主要能力：
-
-- 使用 `QuickLevelKitCatalog` 和 `QuickLevelKitDefinition` 配置关卡目录。
-- 提供默认的 `prepare`、`run`、`advance`、`reload` 和 `stop` 流程。
-- 支持自定义 Stage、Route 和关卡生命周期钩子。
-- 支持当前关卡、最高解锁关卡和关卡状态存档。
-- 提供编辑器 Dock，用于关卡目录的增删、排序和校验。
-- 通过 `QuickLevelKit` Autoload 管理运行时关卡流程。
-
-详细文档：[`addons/quick_level_kit/README.md`](addons/quick_level_kit/README.md)
+根工程不是要复制进游戏的安装包。GDScript 用户不必打开这个 .NET 演示工程。
 
 ## Autoload
 
-启用插件后，默认会注册以下 Autoload：
-
-| 插件 | Autoload |
+| 模块 | 名称 |
 | --- | --- |
-| Quick Audio Manager | `QuickAudioManager` |
-| Quick Database | `QuickDatabase` |
+| Quick Input，任一语言 | `QuickInput` |
+| Quick Audio Manager，任一语言 | `QuickAudioManager` |
+| Quick Database，任一语言 | `QuickDatabase` |
 | Quick Level Kit | `QuickLevelKit` |
+| Quick VFX Manager | 无 |
 
-如果项目中已经存在同名 Autoload，请在启用插件前检查配置，避免名称冲突。
+Input、Audio、Database 的双版本插件会保护不属于自己的同名 Autoload；遇到占用应先检查配置，不要直接删除项目自己的服务。Level Kit 不提供相同的占用保护，启用或停用前必须先检查 `QuickLevelKit` 名称。
 
-## 兼容性
+## 验证
 
-- 目标版本：**Godot 4.x**
-- 主要代码语言：**GDScript**；Quick VFX Manager 为独立 **C# / .NET** 插件
-- 不依赖第三方库。
-- 各插件会尽量使用 Godot 4.x 的通用 API；具体验证版本和限制请以对应插件的 README 为准。
+自动 CI 检查全部 C# 模块的 Debug / Release 编译，以及语言标记、目录和文档链接。完整 Godot 运行、编辑器生命周期及双语言互操作检查由手动工作流触发，也可在本地执行：
 
-## 项目结构
-
-```text
-Godot-Quick-Dev-Kit/
-├── addons/
-│   ├── quick_audio_manager/
-│   │   └── README.md
-│   ├── quick_database/
-│   │   └── README.md
-│   └── quick_level_kit/
-│       └── README.md
-└── README.md
+```bash
+python3 -m unittest discover -s tests -p 'test_*.py' -v
+dotnet build QuickVfxDemo.csproj -c Debug
+dotnet build QuickVfxDemo.csproj -c Release
+python3 tests/run_quick_input.py --backend all --godot "$GODOT" --sdk-version 4.7.2 --framework net9.0
+python3 tests/run_quick_audio.py --backend all --godot "$GODOT"
+GODOT="$GODOT" bash tests/quick_database/run.sh
+GODOT="$GODOT" bash tests/quick_vfx_manager/run.sh
 ```
 
-## 边界说明
+`GODOT` 指向 Godot 4.7.2 .NET，`dotnet` 应可从 PATH 找到。Input 原独立测试默认仍是 Godot 4.6.3 .NET / .NET 8；在 4.7.2 工具箱环境中使用上述显式参数。
 
-这个项目提供的是通用开发基础设施，不会替项目决定具体的玩法和表现：
+- [本次合并验证](docs/CSHARP_INTEGRATION_VALIDATION.md)
+- 历史模块验证：[Input](addons/quick_input/VALIDATION.md)、[Audio](addons/quick_audio_manager/VALIDATION.md)、[Database](addons/quick_database/docs/VALIDATION.md)、[VFX](addons/quick_vfx_manager/docs/VALIDATION.md)
 
-- 不包含完整游戏模板或示例游戏。
-- 不负责具体的 HUD、输入系统、视觉转场和玩法规则。
-- 不强制项目使用特定的 UI、场景组织方式或存档字段。
-- 插件的持久化、关卡逻辑和表现层扩展由使用者的项目负责。
+各模块的兼容范围、资源转换与行为差异以对应 README 为准。Linux headless 通过不等同于 Windows/macOS 导出、实体输入设备或真人试听验收。
 
-## 参与开发
+## 仓库与分发
 
-欢迎提交 Issue 或 Pull Request：
-
-1. Fork 本仓库。
-2. 创建功能分支。
-3. 修改对应插件，并同步更新文档或测试。
-4. 提交 Pull Request，说明变更内容和验证方式。
+源码在同一个仓库维护，语言通过目录、文档入口和插件名称明确区分。本次只整合三个现有 C# 功能分支，没有合入 `chore/isolate-language-projects` 的整仓目录迁移，也未发布 Release 或 Asset Store 包。
 
 ## 许可证
 
-当前仓库尚未声明正式开源许可证。如需在项目中使用、修改或再发布，请先确认仓库作者的授权范围。
+仓库尚未声明正式开源许可证。本次不更改授权范围；使用、修改或再分发前请确认仓库作者授权。
 
 ## 作者
 
-- GitHub：[@RedisTKey](https://github.com/RedisTKey)
-- 仓库：[RedisTKey/Godot-Quick-Dev-Kit](https://github.com/RedisTKey/Godot-Quick-Dev-Kit)
+- 原文档作者：[@RedisTKey](https://github.com/RedisTKey)
+- 当前仓库：[ReedZhu37/Godot-Quick-Dev-Kit](https://github.com/ReedZhu37/Godot-Quick-Dev-Kit)

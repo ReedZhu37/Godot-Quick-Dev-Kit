@@ -6,7 +6,7 @@ Godot **4.7.2 .NET / C#** 的独立 3D VFX 插件。每个特效是一个场景�
 
 ## 打开独立工程
 
-用 Godot **.NET 版本**打开仓库根目录 `project.godot`，安装 .NET 9 SDK，先 Build，再运行。项目只编译这个插件的 C# 文件，默认场景为三站式 VFX Lab。
+用 Godot **.NET 版本**打开仓库根目录 `project.godot`，安装 .NET 9 SDK，先 Build，再运行。根项目同时编译 Input、Audio、Database 与 VFX 的 C# 文件以检查集成，默认只启用 VFX 插件，默认场景仍为三站式 VFX Lab。单独安装 VFX 不需要其他模块。
 
 - 青色 Pulse：世界坐标播放，发起者移动后效果留在原位置
 - 橙色 Composite Burst：粒子、Shader 网格、动画和灯光组合，各自完成后根节点才结束
